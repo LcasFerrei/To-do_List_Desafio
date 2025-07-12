@@ -96,7 +96,6 @@ app.put("/tasks/:id", (req, res) => {
 
 
 // ROTA PARA DELETAR UMA TAREFA
-// ROTA PARA DELETAR (DELETE) UMA TAREFA
 app.delete("/tasks/:id", (req, res) => {
   const { id } = req.params;
 
