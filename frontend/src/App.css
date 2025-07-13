@@ -111,6 +111,15 @@ btn-complete{
     background-color: #c0392b;
 }
 
+btn-edit{
+    background-color: #f39c12;
+    color: white;
+}
+
+.btn-edit:hover{
+    background-color: #e67e22;
+}
+
 /* Estilos do Modal */
 .modal-overlay {
     position: fixed;

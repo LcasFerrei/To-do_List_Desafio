@@ -1,9 +1,17 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 
-function TaskForm({ onAddTask }) {
+function TaskForm({ onSave, initialData = null, buttonText = "Adicionar"}) {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+
+
+  useEffect(() => {
+    if(initialData){
+      setTitle(initialData.title);
+      setDescription(initialData.description || '');
+    }
+  }, [initialData]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -13,9 +21,12 @@ function TaskForm({ onAddTask }) {
       return;
     }
 
-    onAddTask({ title, description });
-    setTitle('');
-    setDescription('');
+    onSave({title, description})
+
+    if (!initialData){
+      setTitle('');
+      setDescription('');
+    }
   };
 
   return (

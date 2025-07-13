@@ -8,8 +8,11 @@ import ConfirmModal from './components/ConfirmModal';
 
 function App() {
   const [tasks, setTasks] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [taskToDelete, setTaskToDelete] = useState(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editingTask, setEditingTask] = useState(null);
+
   useEffect(() => {
     const fetchTasks = async () => {
       try{
@@ -34,6 +37,27 @@ function App() {
       toast.error('Não foi possível adicionar a tarefa.');   
      }
   };
+
+  //Função de salvar tarefa editada
+  const handleUpdateTask = async (taskData) => {
+    if(!editingTask) return;
+    try {
+      const response = await axios.put(`http://localhost:3001/tasks/${editingTask.id}`, {
+        ...editingTask, // Envia os dados antigos...
+        ...taskData      // ...sobrescreve com os novos (title, description)
+      });
+
+      setTasks(prevTasks =>
+        prevTasks.map(task => (task.id === editingTask.id ? response.data.data : task))
+      );
+      toast.success('Tarefa atualizada com sucesso!');
+      setIsEditModalOpen(false); // Fecha o modal
+      setEditingTask(null);
+    }catch (error){
+      console.error("Erro ao atualizar tarefa:", error);
+      toast.error('Não foi possivel atualziar a tarefa')
+    }
+  }
 
   // Função Atualizar o status
   const handleToggleTaskStatus = async (taskId, currentStatus) => {
@@ -75,33 +99,61 @@ function App() {
       console.error("Erro ao remover tarefa:", error);
       toast.error('Não foi possível remover a tarefa.');
     } finally {
-      setIsModalOpen(false);
+      setIsDeleteModalOpen(false);
       setTaskToDelete(null);
     }
   };
 
-  //Função de aparecer o Modal
   const openDeleteModal = (taskId) => {
     setTaskToDelete(taskId);
-    setIsModalOpen(true);
+    setIsDeleteModalOpen(true);
   };
+
+  const openEditModal = (task) => {
+    setEditingTask(task);
+    setIsEditModalOpen(true);
+  }
 
   return (
     <div className="container">
       <Toaster position="top-center" reverseOrder={false} />
       <h1>Minha Lista de Tarefas</h1>
-      <TaskForm onAddTask={handleAddTask} /> 
-      <TaskList 
-        tasks={tasks} 
-        onToggleStatus={handleToggleTaskStatus} 
+      
+      <TaskForm onSave={handleAddTask} buttonText="Adicionar Tarefa" />
+      
+      <TaskList
+        tasks={tasks}
+        onToggleStatus={handleToggleTaskStatus}
         onDeleteTask={openDeleteModal}
+        onEdit={openEditModal} 
       />
+      
       <ConfirmModal
-        isOpen={isModalOpen}
-        OnClose={() => setIsModalOpen(false)}
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
         onConfirm={handleDeleteTask}
         message="Tem certeza que deseja excluir esta tarefa?"
+      />
+
+      {editingTask && (
+        <ConfirmModal
+          isOpen={isEditModalOpen}
+          onClose={() => setIsEditModalOpen(false)}
+          onConfirm={() => {
+            document.querySelector('.edit-form-wrapper form').requestSubmit();
+          }}
+          message={
+            <div className="edit-form-wrapper">
+              <h2>Editar Tarefa</h2>
+              <TaskForm
+                onSave={handleUpdateTask}
+                initialData={editingTask}
+                buttonText="Salvar Alterações"
+              />
+            </div>
+          }
         />
+      )}
     </div>
   );
 }

@@ -1,7 +1,7 @@
 import React from 'react';
 import TaskItem from './TaskItem';
 
-function TaskList({ tasks, onToggleStatus, onDeleteTask }) {
+function TaskList({ tasks, onToggleStatus, onDeleteTask, onEdit }) {
   return (
     <ul className="task-list">
       {tasks.map((task) => (
@@ -10,6 +10,7 @@ function TaskList({ tasks, onToggleStatus, onDeleteTask }) {
           task={task}
           onToggleStatus={onToggleStatus}
           onDeleteTask={onDeleteTask}
+          onEdit={onEdit}
         />
       ))}
     </ul>
