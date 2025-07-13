@@ -1,6 +1,6 @@
 import React from "react";
 
-function TaskItem({ task, onToggleStatus, onDeleteTask}) {
+function TaskItem({ task, onToggleStatus, onDeleteTask, onEdit}) {
     return (
       <li className={`task-item ${task.status === 'concluída' ? 'completed' : ''}`}>
         <div className="task-details">
@@ -8,6 +8,9 @@ function TaskItem({ task, onToggleStatus, onDeleteTask}) {
           <p>{task.description}</p>
         </div>
         <div className="task-actions">
+          <button className="btn-edit" onClick={() => onEdit(task)}>
+            Editar
+          </button>
           <button
             className="btn-complete"
             onClick={() => onToggleStatus(task.id, task.status)}
