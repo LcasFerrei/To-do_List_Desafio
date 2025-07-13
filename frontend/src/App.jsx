@@ -9,12 +9,13 @@ import ConfirmModal from './components/ConfirmModal';
 function App() {
   const [tasks, setTasks] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [filterStatus, setFilterStatus] = useState('todas'); 
+  const [isLoading, setIsLoading] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [taskToDelete, setTaskToDelete] = useState(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(false);
 
   //Modo Escuro
   useEffect(() => {
@@ -22,7 +23,7 @@ function App() {
     document.documentElement.setAttribute('data-theme', theme);
   }, [isDarkMode]);
 
-  //BUSCA AS TAREFAS DA API 
+  //Busca as tarefas da api
   useEffect(() => {
     const fetchTasks = async () => {
       try {
@@ -35,11 +36,33 @@ function App() {
     fetchTasks();
   }, []);
 
-  //FILTRO
-  const filteredTasks = tasks.filter(task =>
-    task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    (task.description && task.description.toLowerCase().includes(searchQuery.toLowerCase()))
-  );
+  //Lógica de ordenação e filtragem
+  const formatDateTimeForSearch = (dateString) => {
+    if (!dateString) return '';
+    const options = { day: '2-digit', month: 'long', year: 'numeric' };
+    return new Date(dateString).toLocaleString('pt-BR', options);
+  };
+
+  const processedTasks = tasks
+    .filter(task => {
+      if (filterStatus === 'pendentes') return task.status === 'pendente';
+      if (filterStatus === 'concluidas') return task.status === 'concluída';
+      return true;
+    })
+    .filter(task => {
+      const searchTerm = searchQuery.toLowerCase();
+      const taskDate = formatDateTimeForSearch(task.due_date).toLowerCase();
+      return (
+        task.title.toLowerCase().includes(searchTerm) ||
+        (task.description && task.description.toLowerCase().includes(searchTerm)) ||
+        taskDate.includes(searchTerm)
+      );
+    })
+    .sort((a, b) => {
+      if (a.status === 'concluída' && b.status !== 'concluída') return 1;
+      if (a.status !== 'concluída' && b.status === 'concluída') return -1;
+      return 0; 
+    });
 
   //Função de Adicionar uma nova tarefa
   const handleAddTask = async (taskData) => {
@@ -56,7 +79,7 @@ function App() {
       setIsLoading(false);
     }
   };
-
+  
   //Função de salvar tarefa editada
   const handleUpdateTask = async (taskData) => {
     if (!editingTask) return;
@@ -129,6 +152,7 @@ function App() {
     }
   };
 
+  //FUnções de controle dos modais
   const openDeleteModal = (taskId) => {
     setTaskToDelete(taskId);
     setIsDeleteModalOpen(true);
@@ -140,49 +164,71 @@ function App() {
   };
 
   return (
-    <div className="app-container">
-      <Toaster position="top-center" reverseOrder={false} />
-      
-      <div className="main-layout">
-        <main className="main-content">
-          <header>
-            <h1>Minhas Tarefas</h1>
-            <button className="theme-toggle-btn" onClick={() => setIsDarkMode(!isDarkMode)}>
-              <i className={isDarkMode ? 'bx bxs-sun' : 'bx bxs-moon'}></i>
-            </button>
-          </header>
-          <TaskList
-            tasks={filteredTasks}
-            onToggleStatus={handleToggleTaskStatus}
-            onDeleteTask={openDeleteModal}
-            onEdit={openEditModal}
-            isLoading={isLoading}
-          />
-        </main>
+    <div className="main-layout">
+      {/* Coluna Principal */}
+      <div className="main-content">
+        <Toaster position="top-center" reverseOrder={false} />
+        <header>
+          <h1>Minhas Tarefas</h1>
+          <button className="theme-toggle-btn" onClick={() => setIsDarkMode(!isDarkMode)}>
+            <i className={isDarkMode ? 'bx bxs-sun' : 'bx bxs-moon'}></i>
+          </button>
+        </header>
 
-        <aside className="sidebar">
-          <div className="sidebar-card">
-            <h2>Pesquisar</h2>
-            <input
-              type="text"
-              placeholder="Pesquisar por título..."
-              className="form-input"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
-          <div className="sidebar-card">
-            <h2>Adicionar Nova Tarefa</h2>
-            <TaskForm
-              onSave={handleAddTask}
-              buttonText="Adicionar Tarefa"
-              isLoading={isLoading}
-            />
-          </div>
-        </aside>
+        {/* Controles de Filtro */}
+        <div className="filter-controls">
+          <button 
+            className={`filter-btn ${filterStatus === 'todas' ? 'active' : ''}`}
+            onClick={() => setFilterStatus('todas')}
+          >
+            Todas
+          </button>
+          <button 
+            className={`filter-btn ${filterStatus === 'pendentes' ? 'active' : ''}`}
+            onClick={() => setFilterStatus('pendentes')}
+          >
+            Pendentes
+          </button>
+          <button 
+            className={`filter-btn ${filterStatus === 'concluidas' ? 'active' : ''}`}
+            onClick={() => setFilterStatus('concluidas')}
+          >
+            Concluídas
+          </button>
+        </div>
+
+        <TaskList
+          tasks={processedTasks} 
+          onToggleStatus={handleToggleTaskStatus}
+          onDeleteTask={openDeleteModal}
+          onEdit={openEditModal}
+          isLoading={isLoading}
+        />
       </div>
 
-      {/* Modais ficam fora do grid para sobrepor toda a tela */}
+      {/* Coluna Lateral */}
+      <aside className="sidebar">
+        <div className="sidebar-card">
+          <h2>Pesquisar</h2>
+          <input
+            type="text"
+            placeholder="Buscar por título, descrição ou data..."
+            className="form-input"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </div>
+        <div className="sidebar-card">
+          <h2>Adicionar Nova Tarefa</h2>
+          <TaskForm
+            onSave={handleAddTask}
+            buttonText="Adicionar Tarefa"
+            isLoading={isLoading}
+          />
+        </div>
+      </aside>
+
+      {/* Modais */}
       <ConfirmModal
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
