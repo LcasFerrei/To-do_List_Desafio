@@ -12,12 +12,12 @@ Aplicação web completa de uma lista de tarefas ("To-Do List") desenvolvida com
 ## 📸 Screenshot
 
 
-![Tela Inicial](./Documents/img/inicial.jpeg)
-![Adicionando Tarefa](./Documents/img/add.jpeg)
-![Tarefa Concluída](./Documents/img/concluido.jpeg)
-![Feedback Toast](./Documents/img/retorno.jpeg)
-![Modal de Exclusão](./Documents/img/excluir.jpeg)
-![Layout Responsivo](./Documents/img/final.jpeg)
+![Tela Inicial](./Documents/img/inicio1.jpeg)
+![Adicionando Tarefa](./Documents/img/addtask.jpeg)
+![Filtro](./Documents/img/filtro.jpeg)
+![Feedback Toast](./Documents/img/taskadd.jpeg)
+![Modal de Exclusão](./Documents/img/excluir1.jpeg)
+![Final](./Documents/img/finalwhite.jpeg)
 
 
 ---
@@ -27,9 +27,14 @@ Aplicação web completa de uma lista de tarefas ("To-Do List") desenvolvida com
 -   **CRUD Completo de Tarefas:**
     -   ✅ **Criar** novas tarefas com título e descrição.
     -   ✅ **Ler** e listar todas as tarefas existentes.
-    -   ✅ **Atualizar** o status (pendente/concluída) e também o título/descrição de uma tarefa.
+    -   ✅ **Atualizar** o status, título, descrição e data de uma tarefa.
     -   ✅ **Deletar** tarefas individualmente.
+-  **Gerenciamento Avançado de Tarefas:**
+    -   ✅ **Ordenação Inteligente:** Tarefas concluídas são automaticamente movidas para o final da lista, mantendo o foco no que é pendente.
+    -   ✅ **Filtros de Status:** Botões para visualizar apenas tarefas "Pendentes", "Concluídas" ou "Todas".
+    -   ✅ **Busca Abrangente:** Pesquisa em tempo real por título, descrição ou data de vencimento.
 -   **Experiência do Usuário:**
+    -   ✅ **Modo Escuro:** Toggle para alternar entre os temas claro e escuro.
     -   ✅ **Notificações Toast:** Feedback visual para sucesso ou erro nas operações.
     -   ✅ **Modal de Confirmação:** Previne exclusões acidentais com uma caixa de diálogo customizada.
     -   ✅ **Layout Responsivo:** A interface é responsiva e se adapta bem a diferentes tamanhos de tela, incluindo dispositivos móveis.
