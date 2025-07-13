@@ -1,6 +1,6 @@
 import React from "react";
 
-function TaskItem({ task, onToggleStatus, onDeleteTask, onEdit}) {
+function TaskItem({ task, onToggleStatus, onDeleteTask, onEdit, isLoading}) {
     return (
       <li className={`task-item ${task.status === 'concluída' ? 'completed' : ''}`}>
         <div className="task-details">
