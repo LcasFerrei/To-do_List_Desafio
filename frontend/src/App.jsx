@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axios from 'axios';
+import { getTasks, addTask, updateTask, deleteTask } from './services/api';
 import toast, { Toaster } from 'react-hot-toast';
 import './App.css';
 import TaskList from './components/TaskList';
@@ -12,11 +12,12 @@ function App() {
   const [taskToDelete, setTaskToDelete] = useState(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchTasks = async () => {
       try{
-        const response = await axios.get('http://localhost:3001/tasks');
+        const response = await getTasks();
         setTasks(response.data.data);
       }catch (error){
         console.error("Error ao buscar as taresfas:", error);
@@ -29,7 +30,7 @@ function App() {
 //Função de Adicionar uma nova tarefa
   const handleAddTask = async (taskData) => {
     try {
-      const response = await axios.post('http://localhost:3001/tasks', taskData);
+      const response = await addTask(taskData);
       setTasks(prevTasks => [response.data.data, ...prevTasks]);
       toast.success('Tarefa adicionada com sucesso!');
     } catch (error) {
@@ -42,9 +43,9 @@ function App() {
   const handleUpdateTask = async (taskData) => {
     if(!editingTask) return;
     try {
-      const response = await axios.put(`http://localhost:3001/tasks/${editingTask.id}`, {
-        ...editingTask, // Envia os dados antigos...
-        ...taskData      // ...sobrescreve com os novos (title, description)
+      const response = await updateTask(editingTask.id, {
+        ...editingTask,
+        ...taskData
       });
 
       setTasks(prevTasks =>
@@ -70,8 +71,8 @@ function App() {
     }
 
     try {
-      await axios.put(`http://localhost:3001/tasks/${taskId}`, {
-        ...taskToUpdate,   
+      await updateTask(taskId, {
+        ...taskToUpdate,  
         status: newStatus 
       });
 
@@ -91,7 +92,7 @@ function App() {
   //Função Delete
   const handleDeleteTask = async () => {
     try {
-      await axios.delete(`http://localhost:3001/tasks/${taskToDelete}`);
+      await deleteTask(taskToDelete);
       setTasks(prevTasks => prevTasks.filter(task => task.id !== taskToDelete));
       toast.success('Boa! Mais um passo dado em direção aos seus objetivos!');
 

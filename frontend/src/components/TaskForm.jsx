@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 
-function TaskForm({ onSave, initialData = null, buttonText = "Adicionar"}) {
+function TaskForm({ onSave, initialData = null, buttonText = "Adicionar", isLoading}) {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
 
@@ -43,7 +43,9 @@ function TaskForm({ onSave, initialData = null, buttonText = "Adicionar"}) {
         value={description}
         onChange={(e) => setDescription(e.target.value)}
       />
-      <button type="submit">Adicionar Tarefa</button>
+      <button type="submit" disabled={isLoading}>
+        {isLoading ? 'Salvando...' : buttonText}
+      </button>
     </form>
   );
 }
