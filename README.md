@@ -25,7 +25,7 @@ Aplicação web completa de uma lista de tarefas ("To-Do List") desenvolvida com
 ## ✨ Funcionalidades
 
 -   **CRUD Completo de Tarefas:**
-    -   ✅ **Criar** novas tarefas com título e descrição.
+    -   ✅ **Criar** novas tarefas com título, descrição e data.
     -   ✅ **Ler** e listar todas as tarefas existentes.
     -   ✅ **Atualizar** o status, título, descrição e data de uma tarefa.
     -   ✅ **Deletar** tarefas individualmente.
@@ -42,6 +42,7 @@ Aplicação web completa de uma lista de tarefas ("To-Do List") desenvolvida com
     -   ✅ **Backend Estruturado:** Lógica de API organizada.
     -   ✅ **Frontend Componentizado:** Interface construída com componentes React reutilizáveis.
     -   ✅ **Serviço de API Abstraído:** As chamadas à API no frontend são centralizadas em um módulo de serviço, seguindo o princípio de Separação de Responsabilidades.
+    -   ✅ **Testes E2E:** Testes com Cypress para garantir a estabilidade das funcionalidades principais.
 
 ---
 
@@ -56,8 +57,11 @@ Aplicação web completa de uma lista de tarefas ("To-Do List") desenvolvida com
 **Frontend:**
 -   **React (com Vite):** Biblioteca para a construção da interface de usuário e ambiente de desenvolvimento rápido.
 -   **Axios:** Cliente HTTP para fazer as requisições à API do backend.
--   **react-hot-toast:** Biblioteca para a exibição de notificações (toasts) elegantes.
+-   **react-hot-toast:** Biblioteca para a exibição de notificações (toasts).
 -   **CSS Puro:** Estilização customizada com foco em responsividade (Flexbox e Media Queries).
+
+**Testes:**
+-   **Cypress** Testes para garantir a qualidade do produto.
 
 ---
 
@@ -113,6 +117,20 @@ Você precisará de **dois terminais** abertos para rodar o projeto completo.
     ```
 
 3.  Abra seu navegador e acesse `http://localhost:5173`.
+
+---
+
+## 🧪 Como Rodar os Testes
+
+Os testes foram escritos com Cypress para simular o comportamento do usuário e garantir que as funcionalidades principais estão funcionando corretamente.
+
+1.  **Certifique-se de que os servidores do backend e do frontend estejam rodando** conforme as instruções acima.
+2.  Abra um **terceiro terminal** e navegue até a pasta `frontend`.
+3.  Execute o seguinte comando para abrir o Cypress Test Runner:
+    ```bash
+    npx cypress open
+    ```
+4.  Na janela do Cypress, escolha **E2E Testing**, selecione seu navegador e clique no arquivo `app.cy.js` para executar os testes.
 
 ---
 

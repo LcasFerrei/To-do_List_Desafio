@@ -35,7 +35,7 @@ app.post("/tasks", (req, res) => {
   }
 
   if (due_date && new Date(due_date) < new Date()) {
-    return res.status(400).json({ "error": "A data de vencimento não pode ser no passado." });
+    return res.status(400).json({ "error": "A data de previsão não pode ser no passado." });
   }
 
   const sql = 'INSERT INTO tasks (title, description, due_date) VALUES (?,?,?)';
@@ -62,7 +62,7 @@ app.put("/tasks/:id", (req, res) => {
   }
 
   if (due_date && new Date(due_date) < new Date()) {
-    return res.status(400).json({ "error": "A data de vencimento não pode ser no passado." });
+    return res.status(400).json({ "error": "A data de previsão não pode ser no passado." });
   }
 
   db.serialize(() => {
